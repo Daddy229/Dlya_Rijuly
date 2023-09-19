@@ -38,7 +38,7 @@ def make_title():
         start += 1
     file.save(name)
 
-def read_info():
+def read_info(only_read=False):
     threshold = 0
     line = 3
     dic = {}
@@ -59,6 +59,9 @@ def read_info():
         s = ord('A')
         line += 1
     first = True
+    if only_read:
+        return dic
+
     int_point = 0   # чтобы не ругался (забей) и так ещё две строки
     horizon = 0
     int_points = []
@@ -90,6 +93,7 @@ def read_info():
             v[-1] = horizon - v[4]
             sheet[f'I{k}'] = round(v[-1] / 1000, 3)
     file.save(name)
+    return dic
 # make_title()
 read_info()
 file.close()
