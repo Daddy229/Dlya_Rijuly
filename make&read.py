@@ -8,7 +8,7 @@ sign = '+-1234567890'
 # открываем файл
 name = 'test.xlsx'
 file = load_workbook(name)
-sheet = file.active
+sheet = file['lst']
 
 # заполняем шапку
 def make_title():
@@ -33,7 +33,7 @@ def make_title():
     start = ord('A')
 
     for i in range(len(line1)):
-        for j in range(3, 29):
+        for j in range(3, 329):
             sheet[f'{chr(start)}{j}'].alignment = Alignment(horizontal='center')
         start += 1
     file.save(name)
@@ -58,9 +58,38 @@ def read_info():
         spis.clear()
         s = ord('A')
         line += 1
-        print(line)
-    print(dic)
-
-make_title()
+    first = True
+    int_point = 0   # чтобы не ругался (забей) и так ещё две строки
+    horizon = 0
+    int_points = []
+    for k, v in dic.items():
+        if not(v[0] is None):
+            int_points = []
+            h_black = v[2] - dic[k + 1][3]
+            h_red = dic[k + 1][2] - dic[k + 2][3]
+            r_pyatok1 = dic[k + 1][2] - v[2]
+            r_pyatok2 = dic[k + 2][3] - dic[k + 1][3]
+            sheet[f'C{k + 2}'] = r_pyatok1
+            sheet[f'D{k + 3}'] = r_pyatok2
+            up_mean = (h_red + h_black) / 2
+            sheet[f'F{k + 1}'] = h_black
+            sheet[f'F{k + 2}'] = h_red
+            sheet[f'G{k + 1}'] = round(up_mean)
+            if not first:
+                sheet[f'I{k}'] = int_point
+                dic[k][-1] = int_point
+            horizon = v[2] + v[-1] * 1000
+            sheet[f'H{k}'] = horizon
+            sheet[f'I{k+1}'] = round((v[-1] * 1000 + up_mean) / 1000, 3)
+            dic[k+1][-1] = round((v[-1] * 1000 + up_mean) / 1000, 3)
+            int_point = dic[k + 1][-1]
+            int_points.append(dic[k][1])
+            int_points.append(dic[k + 1][1])
+            first = False
+        if v[1] not in int_points and not(v[1] is None):
+            v[-1] = horizon - v[4]
+            sheet[f'I{k}'] = round(v[-1] / 1000, 3)
+    file.save(name)
+# make_title()
 read_info()
 file.close()
