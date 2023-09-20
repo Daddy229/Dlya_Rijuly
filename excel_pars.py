@@ -94,6 +94,19 @@ def read_info(only_read=False):
             sheet[f'I{k}'] = round(v[-1] / 1000, 3)
     file.save(name)
     return dic
+
+def find_pickets():
+    dic = read_info(only_read=True)
+    rasst_dic = {}
+    last_picket = 'None'
+    for k, v in dic.items():
+        if isinstance(v[1], str):
+            rasst_dic.setdefault(v[1], (v[-1], 0))
+            last_picket = v[1]
+        if isinstance(v[1], int):
+            rasst_dic.setdefault(f'{last_picket} + {v[1]}', (v[-1], v[1]))
+    return rasst_dic
 # make_title()
-read_info()
+a = read_info()
+print(find_pickets())
 file.close()
