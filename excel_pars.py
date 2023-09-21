@@ -101,10 +101,10 @@ def find_pickets():
     last_picket = 'None'
     for k, v in dic.items():
         if isinstance(v[1], str):
-            rasst_dic.setdefault(v[1], (v[-1], 0))
+            rasst_dic.setdefault(v[1], (round(v[-1], 2), 0))
             last_picket = v[1]
         if isinstance(v[1], int):
-            rasst_dic.setdefault(f'{last_picket} + {v[1]}', (v[-1], v[1]))
+            rasst_dic.setdefault(f'+{v[1]}', (round(v[-1], 2), v[1]))
     return rasst_dic
 # make_title()
 a = read_info()
