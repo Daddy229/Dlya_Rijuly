@@ -40,18 +40,46 @@ dr.line((55 * scale_a5, 20 * scale_a5, 55 * scale_a5, im.height - 65 * scale_a5)
 dr.text((52 * scale_a5, 15 * scale_a5), 'H, m', font=font, fill=1)
 dr.line((55 * scale_a5, im.height - 53 * scale_a5, 55 * scale_a5, im.height - 41 * scale_a5), fill=1)
 
+# delta pickets
+delta = ['']
+pic_len = list(pickets.values())
+first = pic_len[0][1]
+for i in pic_len[1:]:
+    sec = i[1]
+    if i[1] == 0:
+        sec = 100
+    delta.append(str(sec - first))
+    first = i[1]
+
 # pickets
-offset = 55 * scale_a5
+offset_corner = 55 * scale_a5
 x_of_point = []
+step = scale_a5 * 1000 * 100 * scale_x
+step_count = -1
+offset = offset_corner
+delta_c = 0
 
 for name, h_len in pickets.items():
+    if delta[delta_c] != '':    #kostil
+        dr.text((offset + int(delta[delta_c]) * step // 200 - text_size * 0.3 * len(delta[delta_c]),
+                 im.height - 25 * scale_a5), delta[delta_c], font=font, fill=1)
+    delta_c += 1
+    if h_len[1] != 0:
+        offset = step * step_count + offset_corner + step / 100 * h_len[1]
+    else:
+        step_count += 1
+        offset = step * step_count + offset_corner
+    x_of_point.append(offset)
     dr.line((offset, im.height - 29 * scale_a5, offset, im.height - 17 * scale_a5), fill=1)
     dr.text((offset - scale_a5, bottom - 8 * scale_a5), name, font=font, fill=1)
-    dr.text((offset - scale_a5 * 4, im.height - 37 * scale_a5), str(h_len[0]), font=font, fill=1)
-    x_of_point.append(offset)
-    offset += scale_a5 * 1000 * (100 - h_len[1]) * scale_x
+    txt = Image.new(mode='RGB', size=(text_size * len(str(h_len[0])) // 2, text_size), color=(255, 255, 255))
+    txt_dr = ImageDraw.Draw(txt)
+    txt_dr.text((0, 0), str(h_len[0]), font=font, fill=1)
+    txt = txt.rotate(90, expand=True)
+    x, y = int(offset - scale_a5 * 2), int(im.height - 39.5 * scale_a5)
+    lx, ly = txt.size
+    im.paste(txt, (x, y, x + lx, y + ly))
 
-print(x_of_point)
 spec = [i[0] for i in pickets.values()]
 fx = x_of_point[0]
 fy = usl_horizon_line - (spec[0] - horizon) * scale_y * 1000 * scale_a5
@@ -64,5 +92,5 @@ for ind, i in enumerate(spec[1:]):
     fy = usl_horizon_line - (i - horizon) * scale_y * 1000 * scale_a5
     dr.line((fx, fy, fx, usl_horizon_line), fill=1)
 
-im.show()
+#im.show()
 im.save('test.png')
