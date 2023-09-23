@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 from math import *
 import fractions
 import excel_pars
+import calc
 def a5_paper(m=8):
     sheet = Image.new(mode='RGB', size=(420 * m, 297 * m), color=(255, 255, 255))
     return sheet
@@ -58,7 +59,6 @@ step = scale_a5 * 1000 * 100 * scale_x
 step_count = -1
 offset = offset_corner
 delta_c = 0
-
 for name, h_len in pickets.items():
     if delta[delta_c] != '':    #kostil
         dr.text((offset + int(delta[delta_c]) * step // 200 - text_size * 0.3 * len(delta[delta_c]),
@@ -92,5 +92,16 @@ for ind, i in enumerate(spec[1:]):
     fy = usl_horizon_line - (i - horizon) * scale_y * 1000 * scale_a5
     dr.line((fx, fy, fx, usl_horizon_line), fill=1)
 
-#im.show()
-im.save('test.png')
+trail = calc.volume_algo(pickets)
+offset_corner = 55 * scale_a5
+fx = x_of_point[0]
+const_x = fx
+fy = usl_horizon_line - (spec[0] - horizon) * scale_y * 1000 * scale_a5
+for i in trail:
+    dr.line((fx, fy, i[1] * scale_a5 * scale_x * 1000 + const_x,
+             usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5), fill='red', width=int(scale_a5/2))
+    fy = usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5
+    fx += i[1] * scale_a5 * scale_x * 1000
+print(trail)
+im.show()
+im.save('test2.png')
