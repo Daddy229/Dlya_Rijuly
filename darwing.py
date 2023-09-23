@@ -103,5 +103,5 @@ for i in trail:
     fy = usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5
     fx += i[1] * scale_a5 * scale_x * 1000
 print(trail)
-im.show()
-im.save('test2.png')
+#im.show()
+im.save('test1.png')
