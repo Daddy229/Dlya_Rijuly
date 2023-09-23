@@ -92,7 +92,9 @@ for ind, i in enumerate(spec[1:]):
     fy = usl_horizon_line - (i - horizon) * scale_y * 1000 * scale_a5
     dr.line((fx, fy, fx, usl_horizon_line), fill=1)
 
-trail = calc.volume_algo(pickets)
+trail = calc.volume_algo(pickets)[:2]
+work = calc.volume_algo(pickets)[2:]
+print(work)
 offset_corner = 55 * scale_a5
 fx = x_of_point[0]
 const_x = fx
@@ -103,5 +105,5 @@ for i in trail:
     fy = usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5
     fx += i[1] * scale_a5 * scale_x * 1000
 print(trail)
-#im.show()
-im.save('test1.png')
+im.show()
+#im.save('test1.png')

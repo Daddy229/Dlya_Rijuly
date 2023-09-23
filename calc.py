@@ -11,7 +11,6 @@ def kx_find(pic, delta):
     return save_fun
 
 def min_work(kx, delta, range_of_h, h):
-    print(kx, delta, range_of_h, h)
     vol_mas = []
     for i in range(1, range_of_h + 1):
         kf = round((min(h) + 0.05 * i - h[0]) / sum(delta), 4)
@@ -22,12 +21,11 @@ def min_work(kx, delta, range_of_h, h):
             prev_x = current_x
             current_x += j
             int1 = abs(kf * current_x ** 2 / 2 + h[0] * current_x - kf * prev_x ** 2 / 2 - h[0] * prev_x)
-            #int2 = kx[ind_k] * current_x ** 2 / 2 + h[ind_k] * current_x - (kx[ind_k] * prev_x ** 2 / 2 + h[ind_k] * prev_x)
+            #int2 = kx[ind_k] * current_x ** 2 / 2 + h[ind_k] * current_x - (kx[ind_k] * prev_x ** 2 / 2 + h[ind_k] * prev_x)   #suka piton dayn
             int_2trap = abs((h[ind_k] + h[ind_k + 1]) / 2 * j)
             volume += int1 - int_2trap
 
-        vol_mas.append((abs(volume), 0.05 * i))
-        print(volume)
+        vol_mas.append((abs(volume), 0.05 * i, kf))
     return min(vol_mas)
 def delta_f(pic_len):
     first = pic_len[0][1]
@@ -39,6 +37,20 @@ def delta_f(pic_len):
         delta.append(sec - first)
         first = i[1]
     return delta
+
+def work_marks(data, kx, h, delta):
+    kf = data[2]
+    range_x = list(range(1, sum(delta) + 1))
+    cur_x = 0
+    marks = []
+    for ix, i in enumerate(kx):
+        if kf == kx[ix]:
+            continue
+        x = (h[ix] - cur_x * kx[ix] - h[0])/(kf - kx[ix])
+        cur_x += delta[ix]
+        if int(x) in range_x:
+            marks.append(x)
+    return marks
 
 def volume_algo(pickets):
     no_name = [list(i) for i in pickets.values()]
@@ -56,7 +68,11 @@ def volume_algo(pickets):
     h2 = list(map(lambda x: x[0], s_half_mod))
     range_of_h2 = int((max(h2) - min(h2)) / 0.05)
     data2 = min_work(kx2, delta2, range_of_h2, h2)
-    f_connect, s_connect = (min(h1) + data1[1], sum(delta1)), (min(h2) + data2[1], sum(delta1 + delta2))
-    return f_connect, s_connect
+    f_connect, s_connect = (min(h1) + data1[1], sum(delta1), data1[-1], h1[0]),\
+        (min(h2) + data2[1], sum(delta1 + delta2), data2[-1], h2[0])
+    rab_otm1 = work_marks(f_connect, kx1, h1, delta1)
+    rab_otm2 = work_marks(s_connect, kx2, h2, delta2)
+    return f_connect, s_connect, rab_otm1, rab_otm2
 
-print(volume_algo(pickets))
+a = volume_algo(pickets)
+#work_marks(a[0], )
