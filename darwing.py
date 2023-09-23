@@ -106,4 +106,4 @@ for i in trail:
     fx += i[1] * scale_a5 * scale_x * 1000
 print(trail)
 im.show()
-#im.save('test1.png')
+im.save('test1.png')
