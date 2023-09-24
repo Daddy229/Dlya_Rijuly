@@ -96,8 +96,7 @@ for ind, i in enumerate(spec[1:]):
     dr.line((fx, fy, fx, usl_horizon_line), fill=1)
 
 trail = calc.volume_algo(pickets)[:2]
-work = calc.volume_algo(pickets)[2:]
-print(work)
+work = calc.volume_algo(pickets)[2:4]
 offset_corner = 55 * scale_a5
 fx = x_of_point[0]
 const_x = fx
@@ -107,7 +106,6 @@ for i in trail:
              usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5), fill='red', width=int(scale_a5/2))
     fy = usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5
     fx += i[1] * scale_a5 * scale_x * 1000
-print(trail, 'aa')
 st = const_x
 for ix, i in enumerate(work):
     for j in i:
@@ -152,5 +150,31 @@ for i in range(2):
                 text=len_line, font=font, fill='red')
         red_x += delta_x
         dr.line((red_x, red_y, red_x,red_y + 12 * scale_a5), fill=1)
+
+proj = calc.volume_algo(pickets)[4:]
+first_h = proj[0][2]
+offset_corner = 55 * scale_a5
+txt = Image.new(mode='RGB', size=(text_size * len(str(first_h)) // 2, text_size), color=(255, 255, 255))
+txt_dr = ImageDraw.Draw(txt)
+txt_dr.text((0, 0), str(first_h), font=font, fill='red')
+txt = txt.rotate(90, expand=True)
+x, y = int(offset_corner - scale_a5 * 2), int(im.height - 63.5 * scale_a5)
+lx, ly = txt.size
+im.paste(txt, (x, y, x + lx, y + ly))
+x_of_proj = x_of_point[1:]
+x_count = 0
+for mas in proj:
+    mas = mas[:2]
+    for i, d_x in zip(mas[0], mas[1]):
+        txt = Image.new(mode='RGB', size=(text_size * len(str(i)) // 2, text_size), color=(255, 255, 255))
+        txt_dr = ImageDraw.Draw(txt)
+        txt_dr.text((0, 0), str(i), font=font, fill='red')
+        txt = txt.rotate(90, expand=True)
+        x, y = int(x_of_proj[x_count] - scale_a5 * 2), int(im.height - 63.5 * scale_a5)
+        x_count += 1
+        lx, ly = txt.size
+        im.paste(txt, (x, y, x + lx, y + ly))
+        offset_corner += d_x * scale_a5 * scale_x * 1000
+
 im.show()
-#im.save('test1.png')
+im.save('test_beta.png')

@@ -21,7 +21,7 @@ def min_work(kx, delta, range_of_h, h):
             prev_x = current_x
             current_x += j
             int1 = abs(kf * current_x ** 2 / 2 + h[0] * current_x - kf * prev_x ** 2 / 2 - h[0] * prev_x)
-            #int2 = kx[ind_k] * current_x ** 2 / 2 + h[ind_k] * current_x - (kx[ind_k] * prev_x ** 2 / 2 + h[ind_k] * prev_x)   #suka piton dayn
+            #int2 = kx[ind_k] * current_x ** 2 / 2 + h[ind_k] * current_x - (kx[ind_k] * prev_x ** 2 / 2 + h[ind_k] * prev_x)   # suka piton dayn
             int_2trap = abs((h[ind_k] + h[ind_k + 1]) / 2 * j)
             volume += int1 - int_2trap
 
@@ -52,6 +52,14 @@ def work_marks(data, kx, h, delta):
             marks.append(x)
     return marks
 
+def project_points(kf, delta, h):
+    points = []
+    cur_x = 0
+    for i in delta:
+        cur_x += i
+        hight = h + kf * cur_x
+        points.append(round(hight, 2))
+    return points, delta, h
 def volume_algo(pickets):
     no_name = [list(i) for i in pickets.values()]
     f_half = no_name[:len(no_name) // 2 + 1]
@@ -74,7 +82,9 @@ def volume_algo(pickets):
         (h2[-1] + data2[1], sum(delta1 + delta2), data2[-1], h2[0])
     rab_otm1 = work_marks(f_connect, kx1, h1, delta1)
     rab_otm2 = work_marks(s_connect, kx2, h2, delta2)
-    return f_connect, s_connect, rab_otm1, rab_otm2
+    proj1 = project_points(data1[2], delta1, h1[0])
+    proj2 = project_points(data2[2], delta2, h2[0])
+    return f_connect, s_connect, rab_otm1, rab_otm2, proj1, proj2
 
 a = volume_algo(pickets)
 #work_marks(a[0], )
