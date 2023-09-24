@@ -63,6 +63,8 @@ for name, h_len in pickets.items():
     if delta[delta_c] != '':    #kostil
         dr.text((offset + int(delta[delta_c]) * step // 200 - text_size * 0.3 * len(delta[delta_c]),
                  im.height - 25 * scale_a5), delta[delta_c], font=font, fill=1)
+        dr.text((offset + int(delta[delta_c]) * step // 200 - text_size * 0.3 * len(delta[delta_c]),
+                 im.height - 73 * scale_a5), delta[delta_c], font=font, fill=1)
     delta_c += 1
     if h_len[1] != 0:
         offset = step * step_count + offset_corner + step / 100 * h_len[1]
@@ -71,6 +73,7 @@ for name, h_len in pickets.items():
         offset = step * step_count + offset_corner
     x_of_point.append(offset)
     dr.line((offset, im.height - 29 * scale_a5, offset, im.height - 17 * scale_a5), fill=1)
+    dr.line((offset, im.height - 77 * scale_a5, offset, im.height - 65 * scale_a5), fill=1)
     dr.text((offset - scale_a5, bottom - 8 * scale_a5), name, font=font, fill=1)
     txt = Image.new(mode='RGB', size=(text_size * len(str(h_len[0])) // 2, text_size), color=(255, 255, 255))
     txt_dr = ImageDraw.Draw(txt)
@@ -104,6 +107,50 @@ for i in trail:
              usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5), fill='red', width=int(scale_a5/2))
     fy = usl_horizon_line - (i[0] - horizon) * scale_y * 1000 * scale_a5
     fx += i[1] * scale_a5 * scale_x * 1000
-print(trail)
+print(trail, 'aa')
+st = const_x
+for ix, i in enumerate(work):
+    for j in i:
+        delta_rab = list(map(int, delta[1:]))
+        if ix == 1:
+            delta_rab = delta_rab[len(delta_rab) // 2:]
+        num = round(j, 2)
+        while num > 0:
+            num -= delta_rab[0]
+            delta_rab = delta_rab[1:]
+        num = round(abs(num), 2)
+        txt_x = j * scale_a5 * scale_x * 1000 + st
+        txt_y = bottom - 12 * 6 * scale_a5
+        dr.text((txt_x + scale_a5 * 2, txt_y - text_size), fill='blue', font=font, text=str(num))
+        dr.line((txt_x, txt_y, txt_x, usl_horizon_line - (trail[ix][2] * j + trail[ix][3] - horizon)
+                 * scale_a5 * scale_y * 1000), fill='blue')
+    st += trail[0][1] * scale_a5 * scale_x * 1000
+
+
+red_x = x_of_point[0]
+delta_xs = trail[0][1], trail[1][1] - trail[0][1]
+for i in range(2):
+    prom = str(round(trail[i][2] * 1000, 2))
+    len_line = str(delta_xs[i])
+    if trail[i][2] > 0:
+        red_y = usl_horizon_line + 12 * 3 * scale_a5
+        delta_x = delta_xs[i] * scale_a5 * scale_x * 1000
+        dr.line((red_x, red_y, red_x + delta_x, red_y - 12 * scale_a5), fill='red')
+        dr.text((red_x + delta_x - len(len_line) * text_size, red_y - text_size * 2),
+                text=len_line, font=font, fill='red')
+        dr.text((red_x + len(prom) * text_size, red_y - text_size * 2),
+                text=prom, font=font, fill='red')
+        red_x += delta_x
+        dr.line((red_x, red_y, red_x, red_y - 12 * scale_a5), fill=1)
+    else:
+        red_y = usl_horizon_line + 12 * 2 * scale_a5
+        delta_x = delta_xs[i] * scale_a5 * scale_x * 1000
+        dr.line((red_x, red_y, red_x + delta_x, red_y + 12 * scale_a5), fill='red')
+        dr.text((red_x + delta_x - len(prom) * text_size, red_y - text_size * 2 + 12 * scale_a5),
+                text=prom, font=font, fill='red')
+        dr.text((red_x + len(len_line) * text_size, red_y - text_size * 2 + 12 * scale_a5),
+                text=len_line, font=font, fill='red')
+        red_x += delta_x
+        dr.line((red_x, red_y, red_x,red_y + 12 * scale_a5), fill=1)
 im.show()
-im.save('test1.png')
+#im.save('test1.png')

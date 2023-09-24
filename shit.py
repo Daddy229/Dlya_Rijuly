@@ -40,3 +40,9 @@ for i in range(1, range_of_h + 1):
     vol_mas.append((abs(volume), kf, 0.05 * i))
 
 print(*vol_mas, sep='\n')
+
+rx, ry = 0,0
+dr.line((red_x, red_y, red_x + trail[0][1] * scale_a5 * scale_x * 1000, red_y - 12 * scale_a5), fill='red')
+red_x += trail[0][1] * scale_a5 * scale_x * 1000
+dr.line((red_x, red_y, red_x + (trail[1][1] - trail[0][1]) * scale_a5 * scale_x * 1000
+         , red_y - 12 * scale_a5), fill='red')

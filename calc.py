@@ -12,8 +12,8 @@ def kx_find(pic, delta):
 
 def min_work(kx, delta, range_of_h, h):
     vol_mas = []
-    for i in range(1, range_of_h + 1):
-        kf = round((min(h) + 0.05 * i - h[0]) / sum(delta), 4)
+    for i in range(-range_of_h, range_of_h + 1):
+        kf = round((h[-1] + 0.05 * i - h[0]) / sum(delta), 4)
         #print(kf)
         volume = 0
         current_x = 0
@@ -61,15 +61,17 @@ def volume_algo(pickets):
     kx1 = kx_find(f_half, delta1)
     kx2 = kx_find(s_half, delta2)
     h1 = list(map(lambda x: x[0], f_half))
-    range_of_h1 = int((max(h1) - min(h1)) / 0.05)
+    range_of_h1 = int(h1[-1] / 0.05)
     data1 = min_work(kx1, delta1, range_of_h1, h1)
+    h1[-1] = h1[-1] + data1[1]
     s_half_mod = s_half.copy()
-    s_half_mod[0][0] = data1[1] + h1[0]
+    s_half_mod[0][0] = h1[-1]
     h2 = list(map(lambda x: x[0], s_half_mod))
-    range_of_h2 = int((max(h2) - min(h2)) / 0.05)
+    range_of_h2 = int(h2[-1] / 0.05)
     data2 = min_work(kx2, delta2, range_of_h2, h2)
-    f_connect, s_connect = (min(h1) + data1[1], sum(delta1), data1[-1], h1[0]),\
-        (min(h2) + data2[1], sum(delta1 + delta2), data2[-1], h2[0])
+    # меняю минимум на последнюю
+    f_connect, s_connect = (h1[-1], sum(delta1), data1[-1], h1[0]),\
+        (h2[-1] + data2[1], sum(delta1 + delta2), data2[-1], h2[0])
     rab_otm1 = work_marks(f_connect, kx1, h1, delta1)
     rab_otm2 = work_marks(s_connect, kx2, h2, delta2)
     return f_connect, s_connect, rab_otm1, rab_otm2
