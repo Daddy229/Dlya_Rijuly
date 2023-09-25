@@ -38,6 +38,13 @@ def make_title():
         start += 1
     file.save(name)
 
+def clear_table():
+    start = ord('A')
+    for i in range(100):
+        for j in range(9):
+            sheet[f'{chr(start + j)}{3 + i}'] = ''
+    file.save(name)
+
 def read_info(only_read=False):
     threshold = 0
     line = 3
@@ -106,6 +113,5 @@ def find_pickets():
         if isinstance(v[1], int):
             rasst_dic.setdefault(f'+{v[1]}', (round(v[-1], 2), v[1]))
     return rasst_dic
-# make_title()
-a = read_info()
+
 file.close()
