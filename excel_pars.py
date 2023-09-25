@@ -108,5 +108,4 @@ def find_pickets():
     return rasst_dic
 # make_title()
 a = read_info()
-print(find_pickets())
 file.close()
