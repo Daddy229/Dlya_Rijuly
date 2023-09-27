@@ -1,17 +1,13 @@
 # подключаем библиотеки
 from openpyxl import load_workbook
+from openpyxl import Workbook
 from openpyxl.styles import Alignment
 
-# проверка пикета
-sign = '+-1234567890'
-
-# открываем файл
-name = 'test.xlsx'
-file = load_workbook(name)
-sheet = file['lst']
-
 # заполняем шапку
-def make_title():
+def make_title(f_name):
+    # file = load_workbook('example.xlsx')
+    file = Workbook()
+    sheet = file.active
     line1 = ['№ станции', 'Точка визирования', '', 'остчёты по рейкам',
              '', 'Превышения', '', 'Горизонт прибора', 'Высота']
     line2 = ['', '', 'задний', 'передний', 'промежуточный', 'h', 'hcp']
@@ -36,16 +32,20 @@ def make_title():
         for j in range(3, 329):
             sheet[f'{chr(start)}{j}'].alignment = Alignment(horizontal='center')
         start += 1
-    file.save(name)
+    file.save(f_name)
 
-def clear_table():
+def clear_table(f_name):
+    file = load_workbook(f_name)
+    sheet = file.active
     start = ord('A')
     for i in range(100):
         for j in range(9):
             sheet[f'{chr(start + j)}{3 + i}'] = ''
-    file.save(name)
+    file.save(f_name)
 
-def read_info(only_read=False):
+def read_info(f_name, only_read=False):
+    file = load_workbook(f_name)
+    sheet = file.active
     threshold = 0
     line = 3
     dic = {}
@@ -99,11 +99,11 @@ def read_info(only_read=False):
         if v[1] not in int_points and not(v[1] is None):
             v[-1] = horizon - v[4]
             sheet[f'I{k}'] = round(v[-1] / 1000, 3)
-    file.save(name)
+    file.save(f_name)
     return dic
 
-def find_pickets():
-    dic = read_info(only_read=True)
+def find_pickets(f_name):
+    dic = read_info(f_name, only_read=True)
     rasst_dic = {}
     last_picket = 'None'
     for k, v in dic.items():
@@ -113,5 +113,3 @@ def find_pickets():
         if isinstance(v[1], int):
             rasst_dic.setdefault(f'+{v[1]}', (round(v[-1], 2), v[1]))
     return rasst_dic
-
-file.close()

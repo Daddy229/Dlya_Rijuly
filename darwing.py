@@ -16,8 +16,8 @@ def usl_horizon(pics):
         heights.append(j[0])
     return int(min(heights) - subtract)
 
-def draw_profile(pickets, m_x_scale=2000, m_y_scale=200, profile_name='test'):
-
+def draw_profile(m_x_scale=2000, m_y_scale=200, profile_name='example'):
+    pickets = excel_pars.find_pickets(f'{profile_name}.xlsx')
     fr_x = fractions.Fraction(1, m_x_scale)
     fr_y = fractions.Fraction(1, m_y_scale)
     scale_y = 1 / m_y_scale
@@ -201,5 +201,6 @@ def draw_profile(pickets, m_x_scale=2000, m_y_scale=200, profile_name='test'):
     im.show()
     im.save(f'{profile_name}.png')
 
-pickets_data = excel_pars.find_pickets()
-draw_profile(pickets_data)
+# pickets_data = excel_pars.find_pickets()
+# draw_profile(pickets_data)
+#draw_profile(m_x_scale=2000, m_y_scale=200, profile_name='f')
